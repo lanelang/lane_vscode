@@ -1,0 +1,56 @@
+{
+  "name": "lane_vscode",
+  "displayName": "Lane",
+  "description": "VS Code support for the Lane programming language.",
+  "version": "0.1.0",
+  "publisher": "lanec",
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:lane"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "lane",
+        "aliases": [
+          "Lane",
+          "lane"
+        ],
+        "extensions": [
+          ".lane"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "configuration": {
+      "title": "Lane",
+      "properties": {
+        "lane.lsp.path": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the native lane_lsp executable."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.4.5"
+  }
+}
