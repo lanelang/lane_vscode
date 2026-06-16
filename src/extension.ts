@@ -20,8 +20,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     return;
   }
 
+  const args = laneLspArgs();
   const serverOptions: ServerOptions = {
     command: executable,
+    args,
     transport: TransportKind.stdio,
   };
   const clientOptions: LanguageClientOptions = {
@@ -44,6 +46,16 @@ export async function deactivate(): Promise<void> {
     await client.stop();
     client = undefined;
   }
+}
+
+function laneLspArgs(): string[] {
+  const stdlib = vscode.workspace
+    .getConfiguration("lane")
+    .get<string>("stdlib.path", "");
+  if (!stdlib) {
+    return [];
+  }
+  return ["--stdlib", stdlib];
 }
 
 function findLaneLspExecutable(
