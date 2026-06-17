@@ -4,7 +4,7 @@
   "description": "VS Code support for the Lane programming language.",
   "version": "0.1.0",
   "publisher": "lanec",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.90.0"
   },
