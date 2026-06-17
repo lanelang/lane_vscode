@@ -1,0 +1,263 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Lane",
+  "scopeName": "source.lane",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#reserved"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#types"
+    },
+    {
+      "include": "#declarations"
+    },
+    {
+      "include": "#qualifiedNames"
+    },
+    {
+      "include": "#functionCalls"
+    },
+    {
+      "include": "#operators"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.lane",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.lane",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.lane",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.lane",
+              "match": "\\\\(?:[\\\\\"nrt]|x[0-6][0-9A-Fa-f]|x7[0-7])"
+            },
+            {
+              "name": "invalid.illegal.escape.lane",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.integer.lane",
+          "match": "\\b[0-9]+\\b"
+        }
+      ]
+    },
+    "reserved": {
+      "patterns": [
+        {
+          "name": "invalid.illegal.reserved.lane",
+          "match": "\\b(?:effect|handler|module|import|pub|return)\\b"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.declaration.lane",
+          "match": "\\b(?:struct|enum|fn|let|type|offer|auto)\\b"
+        },
+        {
+          "name": "keyword.control.conditional.lane",
+          "match": "\\b(?:if|else)\\b"
+        },
+        {
+          "name": "keyword.control.match.lane",
+          "match": "\\bmatch\\b"
+        },
+        {
+          "name": "support.function.builtin.lane",
+          "match": "\\bbuiltin\\b"
+        },
+        {
+          "name": "constant.language.boolean.lane",
+          "match": "\\b(?:true|false)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "support.type.primitive.lane",
+          "match": "\\b(?:Int|Bool|String|Unit|Type)\\b"
+        },
+        {
+          "name": "entity.name.type.lane",
+          "match": "\\b[A-Z][A-Za-z0-9_]*\\b"
+        }
+      ]
+    },
+    "declarations": {
+      "patterns": [
+        {
+          "name": "meta.declaration.struct.lane",
+          "match": "\\b(struct)\\s+([A-Za-z][A-Za-z0-9_]*)",
+          "captures": {
+            "1": {
+              "name": "keyword.declaration.struct.lane"
+            },
+            "2": {
+              "name": "entity.name.type.struct.lane"
+            }
+          }
+        },
+        {
+          "name": "meta.declaration.enum.lane",
+          "match": "\\b(enum)\\s+([A-Za-z][A-Za-z0-9_]*)",
+          "captures": {
+            "1": {
+              "name": "keyword.declaration.enum.lane"
+            },
+            "2": {
+              "name": "entity.name.type.enum.lane"
+            }
+          }
+        },
+        {
+          "name": "meta.declaration.function.lane",
+          "match": "\\b(fn)(?:\\s*\\[[^\\]]*\\])?\\s+([A-Za-z_][A-Za-z0-9_]*)",
+          "captures": {
+            "1": {
+              "name": "keyword.declaration.function.lane"
+            },
+            "2": {
+              "name": "entity.name.function.lane"
+            }
+          }
+        },
+        {
+          "name": "meta.declaration.value.lane",
+          "match": "\\b(let|offer)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+          "captures": {
+            "1": {
+              "name": "keyword.declaration.value.lane"
+            },
+            "2": {
+              "name": "variable.other.definition.lane"
+            }
+          }
+        },
+        {
+          "name": "meta.declaration.type-member.lane",
+          "match": "\\b(type)\\s+([A-Za-z][A-Za-z0-9_]*)",
+          "captures": {
+            "1": {
+              "name": "keyword.declaration.type.lane"
+            },
+            "2": {
+              "name": "entity.name.type.member.lane"
+            }
+          }
+        }
+      ]
+    },
+    "qualifiedNames": {
+      "patterns": [
+        {
+          "name": "meta.qualified.struct-literal.lane",
+          "match": "\\b([A-Z][A-Za-z0-9_]*)(?:\\s*\\[[^\\]]*\\])?(::)(?=\\s*\\{)",
+          "captures": {
+            "1": {
+              "name": "entity.name.type.lane"
+            },
+            "2": {
+              "name": "keyword.operator.namespace.lane"
+            }
+          }
+        },
+        {
+          "name": "meta.qualified.variant.lane",
+          "match": "\\b([A-Z][A-Za-z0-9_]*)(::)([A-Za-z][A-Za-z0-9_]*)",
+          "captures": {
+            "1": {
+              "name": "entity.name.type.lane"
+            },
+            "2": {
+              "name": "keyword.operator.namespace.lane"
+            },
+            "3": {
+              "name": "entity.name.function.variant.lane"
+            }
+          }
+        }
+      ]
+    },
+    "functionCalls": {
+      "patterns": [
+        {
+          "name": "meta.function-call.lane",
+          "match": "\\b([A-Za-z_][A-Za-z0-9_]*)(?=\\s*\\()",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.call.lane"
+            }
+          }
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.arrow.lane",
+          "match": "=>|->"
+        },
+        {
+          "name": "keyword.operator.namespace.lane",
+          "match": "::"
+        },
+        {
+          "name": "keyword.operator.logical.lane",
+          "match": "&&|\\|\\||!"
+        },
+        {
+          "name": "keyword.operator.comparison.lane",
+          "match": "==|!=|<=|>=|<|>"
+        },
+        {
+          "name": "keyword.operator.pipeline.lane",
+          "match": "\\|>"
+        },
+        {
+          "name": "keyword.operator.arithmetic.lane",
+          "match": "[+\\-*/%]"
+        },
+        {
+          "name": "keyword.operator.assignment.lane",
+          "match": "="
+        }
+      ]
+    }
+  }
+}
