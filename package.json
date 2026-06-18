@@ -36,6 +36,12 @@
         "path": "./syntaxes/lane.tmLanguage.json"
       }
     ],
+    "commands": [
+      {
+        "command": "lane.restartLsp",
+        "title": "Lane: Restart LSP"
+      }
+    ],
     "configuration": {
       "title": "Lane",
       "properties": {
