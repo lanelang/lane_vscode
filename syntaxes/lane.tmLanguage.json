@@ -79,7 +79,7 @@
       "patterns": [
         {
           "name": "invalid.illegal.reserved.lane",
-          "match": "\\b(?:effect|handler|module|import|pub|return)\\b"
+          "match": "\\b(?:effect|handler|return)\\b"
         }
       ]
     },
@@ -87,7 +87,11 @@
       "patterns": [
         {
           "name": "keyword.declaration.lane",
-          "match": "\\b(?:struct|enum|fn|let|type|offer|auto)\\b"
+          "match": "\\b(?:struct|enum|fn|let|type|offer|auto|module|pub)\\b"
+        },
+        {
+          "name": "keyword.control.import.lane",
+          "match": "\\bimport\\b"
         },
         {
           "name": "keyword.control.conditional.lane",
