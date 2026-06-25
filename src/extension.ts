@@ -43,10 +43,8 @@ async function startLaneLsp(): Promise<void> {
     await showLaneLspPathError(executable.message);
     return;
   }
-  const args = laneLspArgs();
   const serverOptions: ServerOptions = {
     command: executable.path,
-    args,
     transport: TransportKind.stdio,
   };
   const clientOptions: LanguageClientOptions = {
@@ -69,16 +67,6 @@ async function startLaneLsp(): Promise<void> {
       `Failed to start Lane LSP: ${message}`,
     );
   }
-}
-
-function laneLspArgs(): string[] {
-  const stdlib = vscode.workspace
-    .getConfiguration("lane")
-    .get<string>("stdlib.path", "");
-  if (!stdlib) {
-    return [];
-  }
-  return ["--stdlib", stdlib];
 }
 
 type ExecutableResult =

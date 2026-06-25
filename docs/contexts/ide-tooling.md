@@ -24,6 +24,11 @@ The VS Code setting that points the Lane VS Code Extension at a native Lane LSP
 Server executable during v1 development.
 _Avoid_: compiler path, project root
 
+**Workspace Root URI**:
+The `rootUri` or first `workspaceFolders` URI sent by the VS Code Language
+Client during LSP initialization.
+_Avoid_: standard library path, source import
+
 **VS Code Language Client**:
 The TypeScript client layer in the Lane VS Code Extension, built with
 `vscode-languageclient`, that manages VS Code's LSP client lifecycle and
@@ -36,11 +41,10 @@ returns parse, resolution, type checking, diagnostics, and semantic artifacts
 without performing file or process IO.
 _Avoid_: LSP handler, filesystem service
 
-**Single-File Analysis**:
-The v1 compiler-analysis mode that checks one Lane source text together with
-the standard prelude, without project discovery, module graphs, or cross-file
-dependency analysis.
-_Avoid_: project compilation, workspace analysis
+**Workspace Library Analysis**:
+The v1 LSP analysis mode that checks the current editor document together with
+Lane library sources discovered under the initialized workspace root.
+_Avoid_: compiler-owned filesystem policy, standard library injection
 
 **Document Snapshot**:
 The text and version of one editor document as seen by the Lane LSP Server.
@@ -103,11 +107,14 @@ _Avoid_: VS Code Web extension, WASM language server
 - During v1 development, the **Lane VS Code Extension** primarily uses the
   configured **LSP Executable Path** and may fall back to repository-local
   development locations.
+- The **VS Code Language Client** sends the **Workspace Root URI** in the
+  `initialize` request; the extension does not pass a standard-library path on
+  the `lane_lsp` command line.
 - The **Lane VS Code Extension** uses a **VS Code Language Client** rather than
   a custom JSON-RPC client.
 - The first supported deployment target is **Desktop Native LSP**.
 - The first supported feature scope is **Diagnostics-First LSP**.
-- v1 **Compiler Analysis API** uses **Single-File Analysis**.
+- v1 **Lane LSP Server** diagnostics use **Workspace Library Analysis**.
 - The **LSP Protocol Layer** uses the **JSON-RPC Framing Library** for wire
   framing and keeps Lane-specific method dispatch in the Lane LSP Server.
 - **Editor Intelligence** is a later feature layer built on compiler-analysis
@@ -132,8 +139,10 @@ _Avoid_: VS Code Web extension, WASM language server
 > **Domain expert:** "No. v1 is **Diagnostics-First LSP**; completion and hover
 > belong to **Editor Intelligence** after the diagnostic loop is stable."
 
-> **Dev:** "Should the first LSP implementation discover projects?"
-> **Domain expert:** "No. v1 uses **Single-File Analysis** with prelude loading."
+> **Dev:** "Should the VS Code extension pass a standard-library path?"
+> **Domain expert:** "No. The **VS Code Language Client** sends the
+> **Workspace Root URI** during initialization; workspace source discovery is a
+> Lane LSP Server concern."
 
 > **Dev:** "Should the LSP parse compiler diagnostic strings to recover ranges?"
 > **Domain expert:** "No. `lanec` produces **Structured Compiler Diagnostics**."

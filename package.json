@@ -49,11 +49,6 @@
           "type": "string",
           "default": "",
           "description": "Path to the native lane_lsp executable."
-        },
-        "lane.stdlib.path": {
-          "type": "string",
-          "default": "",
-          "description": "Path to the Lane standard library root."
         }
       }
     }

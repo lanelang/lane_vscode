@@ -13,12 +13,12 @@ _Avoid_: language server, compiler
 **LSP Executable Path**:
 The user setting that points the extension at an installed `lane_lsp`
 executable during v1 development.
-_Avoid_: compiler path, standard library path
+_Avoid_: compiler path, workspace root
 
-**Standard Library Setting**:
-The editor-side setting passed to the LSP server so diagnostics can include the
-prelude.
-_Avoid_: source import, compiler global
+**Workspace Root URI**:
+The root URI sent by VS Code's language client during LSP initialization so the
+Lane LSP server can analyze workspace library sources.
+_Avoid_: standard library path, compiler global
 
 ## Relationships
 
