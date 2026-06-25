@@ -1,6 +1,8 @@
+import * as childProcess from "node:child_process";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import * as util from "node:util";
 import * as vscode from "vscode";
 import {
   LanguageClient,
@@ -9,12 +11,17 @@ import {
   TransportKind,
 } from "vscode-languageclient/node";
 
+const execFile = util.promisify(childProcess.execFile);
+
 let client: LanguageClient | undefined;
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   context.subscriptions.push(
     vscode.commands.registerCommand("lane.restartLsp", async () => {
       await restartLaneLsp();
+    }),
+    vscode.languages.registerDocumentFormattingEditProvider("lane", {
+      provideDocumentFormattingEdits: formatLaneDocument,
     }),
   );
 
@@ -67,6 +74,43 @@ async function startLaneLsp(): Promise<void> {
     void vscode.window.showErrorMessage(
       `Failed to start Lane LSP: ${message}`,
     );
+  }
+}
+
+async function formatLaneDocument(
+  document: vscode.TextDocument,
+): Promise<vscode.TextEdit[]> {
+  const executable = findLaneExecutable();
+  if (!executable.ok) {
+    await showLanePathError(executable.message);
+    return [];
+  }
+
+  const source = document.getText();
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "lane-fmt-"));
+  const tempFile = path.join(tempDir, "format.lane");
+  try {
+    fs.writeFileSync(tempFile, source, "utf8");
+    await execFile(executable.path, ["fmt", tempFile], {
+      maxBuffer: 10 * 1024 * 1024,
+    });
+    const formatted = fs.readFileSync(tempFile, "utf8");
+    if (formatted === source) {
+      return [];
+    }
+    return [
+      vscode.TextEdit.replace(
+        new vscode.Range(document.positionAt(0), document.positionAt(source.length)),
+        formatted,
+      ),
+    ];
+  } catch (error) {
+    void vscode.window.showErrorMessage(
+      `Lane format failed: ${formatProcessError(error)}`,
+    );
+    return [];
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
   }
 }
 
@@ -140,6 +184,33 @@ function validateExecutablePath(
 
 function isNodeError(error: unknown): error is NodeJS.ErrnoException {
   return error instanceof Error && "code" in error;
+}
+
+function formatProcessError(error: unknown): string {
+  if (error instanceof Error) {
+    const output = processOutput(error);
+    return output || error.message;
+  }
+  return String(error);
+}
+
+function processOutput(error: Error): string {
+  const withOutput = error as Error & {
+    stdout?: string | Buffer;
+    stderr?: string | Buffer;
+  };
+  const stderr = outputText(withOutput.stderr);
+  if (stderr) {
+    return stderr;
+  }
+  return outputText(withOutput.stdout);
+}
+
+function outputText(output: string | Buffer | undefined): string {
+  if (!output) {
+    return "";
+  }
+  return output.toString().trim();
 }
 
 async function showLanePathError(message: string): Promise<void> {

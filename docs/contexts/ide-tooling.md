@@ -10,8 +10,8 @@ Developer-facing editor and language-server integration built around Lane.
 _Avoid_: compiler front end, build system
 
 **Lane LSP Server**:
-The native language-server executable implemented under `lane_lsp`
-for VS Code Desktop and other LSP clients.
+The native language-server mode started with `lane lsp` for VS Code Desktop
+and other LSP clients.
 _Avoid_: compiler daemon, VS Code backend
 
 **Lane VS Code Extension**:
@@ -70,9 +70,9 @@ source span, and severity before any CLI or LSP rendering.
 _Avoid_: formatted error string, LSP diagnostic
 
 **Diagnostics-First LSP**:
-The v1 LSP feature scope: initialize the language server, track open document
-snapshots, rerun full-file compiler analysis after document changes, and publish
-editor diagnostics.
+The initial LSP feature scope: initialize the language server, track open
+document snapshots, rerun full-file compiler analysis after document changes,
+and publish editor diagnostics.
 _Avoid_: complete IDE, symbol index
 
 **LSP Protocol Layer**:
@@ -86,8 +86,8 @@ JSON-RPC 2.0 messages and LSP-style `Content-Length` framing.
 _Avoid_: LSP server framework, method dispatch
 
 **Editor Intelligence**:
-Post-v1 editor features such as completion, hover, go-to-definition,
-find-references, and document symbols.
+Server-backed semantic editor features such as hover and go-to-definition,
+plus later features such as completion, find-references, and document symbols.
 _Avoid_: diagnostics, compiler checking
 
 **Desktop Native LSP**:
@@ -109,16 +109,19 @@ _Avoid_: VS Code Web extension, WASM language server
   development locations.
 - The **VS Code Language Client** sends the **Workspace Root URI** in the
   `initialize` request; the extension does not pass a standard-library path on
-  the `lane_lsp` command line.
+  the `lane lsp` command line.
 - The **Lane VS Code Extension** uses a **VS Code Language Client** rather than
   a custom JSON-RPC client.
+- Hover and go-to-definition are enabled through **Lane LSP Server**
+  capabilities advertised during `initialize`; the **Lane VS Code Extension**
+  does not implement separate VS Code providers for those features.
 - The first supported deployment target is **Desktop Native LSP**.
-- The first supported feature scope is **Diagnostics-First LSP**.
+- The first supported feature scope was **Diagnostics-First LSP**.
 - v1 **Lane LSP Server** diagnostics use **Workspace Library Analysis**.
 - The **LSP Protocol Layer** uses the **JSON-RPC Framing Library** for wire
   framing and keeps Lane-specific method dispatch in the Lane LSP Server.
-- **Editor Intelligence** is a later feature layer built on compiler-analysis
-  artifacts and stable editor document state.
+- **Editor Intelligence** is built on compiler-analysis artifacts and stable
+  editor document state.
 - **Document Snapshots** are passed to `lanec` as in-memory source text.
 - v1 **Document Snapshots** are maintained through **Full Document Sync**.
 - **Editor Diagnostics** are derived from **Structured Compiler Diagnostics**;
@@ -135,9 +138,9 @@ _Avoid_: VS Code Web extension, WASM language server
 > **Dev:** "Does v1 need to support VS Code Web?"
 > **Domain expert:** "No. v1 uses **Desktop Native LSP**."
 
-> **Dev:** "Should completion and hover be in the first LSP milestone?"
-> **Domain expert:** "No. v1 is **Diagnostics-First LSP**; completion and hover
-> belong to **Editor Intelligence** after the diagnostic loop is stable."
+> **Dev:** "Should the VS Code extension implement hover or go-to-definition?"
+> **Domain expert:** "No. The **Lane LSP Server** advertises those capabilities
+> during `initialize`, and the **VS Code Language Client** wires them into VS Code."
 
 > **Dev:** "Should the VS Code extension pass a standard-library path?"
 > **Domain expert:** "No. The **VS Code Language Client** sends the

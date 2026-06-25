@@ -36,6 +36,19 @@
         "path": "./syntaxes/lane.tmLanguage.json"
       }
     ],
+    "semanticTokenScopes": [
+      {
+        "language": "lane",
+        "scopes": {
+          "variable": [
+            "variable.other.lane"
+          ],
+          "parameter": [
+            "variable.parameter.lane"
+          ]
+        }
+      }
+    ],
     "commands": [
       {
         "command": "lane.restartLsp",
@@ -50,6 +63,11 @@
           "default": "",
           "description": "Path to the native lane executable."
         }
+      }
+    },
+    "configurationDefaults": {
+      "[lane]": {
+        "editor.semanticHighlighting.enabled": true
       }
     }
   },

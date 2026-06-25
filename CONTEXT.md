@@ -23,5 +23,8 @@ _Avoid_: standard library path, compiler global
 ## Relationships
 
 - `lane_vscode` owns VS Code packaging and client configuration.
-- `lane_lsp` owns the server process and protocol handling.
+- The Lane LSP server owns the server process and protocol handling.
 - `lanec` owns language semantics.
+- Hover and go-to-definition are provided by server-advertised LSP
+  capabilities; the extension only needs to start the standard language client
+  for `.lane` documents.
