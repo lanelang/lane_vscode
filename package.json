@@ -45,10 +45,10 @@
     "configuration": {
       "title": "Lane",
       "properties": {
-        "lane.lsp.path": {
+        "lane.path": {
           "type": "string",
           "default": "",
-          "description": "Path to the native lane_lsp executable."
+          "description": "Path to the native lane executable."
         }
       }
     }

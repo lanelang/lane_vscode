@@ -19,10 +19,10 @@ The VS Code Desktop extension implemented under `lane_vscode` that starts,
 configures, and communicates with the Lane LSP Server.
 _Avoid_: compiler plugin, web extension
 
-**LSP Executable Path**:
-The VS Code setting that points the Lane VS Code Extension at a native Lane LSP
-Server executable during v1 development.
-_Avoid_: compiler path, project root
+**Lane Executable Path**:
+The VS Code setting that points the Lane VS Code Extension at a native `lane`
+CLI executable. The extension starts the **Lane LSP Server** with `lane lsp`.
+_Avoid_: compiler path, project root, lane_lsp executable
 
 **Workspace Root URI**:
 The `rootUri` or first `workspaceFolders` URI sent by the VS Code Language
@@ -105,7 +105,7 @@ _Avoid_: VS Code Web extension, WASM language server
 - The **Lane VS Code Extension** is responsible for locating, launching, and
   restarting the **Lane LSP Server**.
 - During v1 development, the **Lane VS Code Extension** primarily uses the
-  configured **LSP Executable Path** and may fall back to repository-local
+  configured **Lane Executable Path** and may fall back to repository-local
   development locations.
 - The **VS Code Language Client** sends the **Workspace Root URI** in the
   `initialize` request; the extension does not pass a standard-library path on

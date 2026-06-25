@@ -10,10 +10,10 @@ The VS Code Desktop extension that registers Lane files and connects VS Code to
 the Lane LSP server.
 _Avoid_: language server, compiler
 
-**LSP Executable Path**:
-The user setting that points the extension at an installed `lane_lsp`
-executable during v1 development.
-_Avoid_: compiler path, workspace root
+**Lane Executable Path**:
+The user setting that points the extension at an installed `lane` executable.
+The extension starts the language server with the `lane lsp` subcommand.
+_Avoid_: compiler path, workspace root, lane_lsp executable
 
 **Workspace Root URI**:
 The root URI sent by VS Code's language client during LSP initialization so the

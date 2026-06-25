@@ -38,13 +38,14 @@ async function stopLaneLsp(): Promise<void> {
 }
 
 async function startLaneLsp(): Promise<void> {
-  const executable = findLaneLspExecutable();
+  const executable = findLaneExecutable();
   if (!executable.ok) {
-    await showLaneLspPathError(executable.message);
+    await showLanePathError(executable.message);
     return;
   }
   const serverOptions: ServerOptions = {
     command: executable.path,
+    args: ["lsp"],
     transport: TransportKind.stdio,
   };
   const clientOptions: LanguageClientOptions = {
@@ -73,17 +74,17 @@ type ExecutableResult =
   | { ok: true; path: string }
   | { ok: false; message: string };
 
-function findLaneLspExecutable(): ExecutableResult {
+function findLaneExecutable(): ExecutableResult {
   const configured = vscode.workspace
     .getConfiguration("lane")
-    .get<string>("lsp.path", "");
+    .get<string>("path", "");
   if (configured) {
-    return validateExecutablePath(configured, "Configured Lane LSP path");
+    return validateExecutablePath(configured, "Configured Lane path");
   }
 
   let firstCandidateError: string | undefined;
   for (const candidate of developmentCandidates()) {
-    const result = validateExecutablePath(candidate, "Lane LSP candidate");
+    const result = validateExecutablePath(candidate, "Lane candidate");
     if (result.ok) {
       return result;
     }
@@ -96,14 +97,16 @@ function findLaneLspExecutable(): ExecutableResult {
     ok: false,
     message:
       firstCandidateError ??
-      "Lane LSP executable not found. Set lane.lsp.path to a native lane_lsp executable.",
+      "Lane executable not found. Set lane.path to a native lane executable.",
   };
 }
 
 function developmentCandidates(): string[] {
   return [
-    path.join(os.homedir(), ".moon", "bin", "lane_lsp"),
-    path.join(os.homedir(), ".moon", "bin", "lane_lsp.exe"),
+    path.join(__dirname, "..", "..", "bins", "lane"),
+    path.join(__dirname, "..", "..", "bins", "lane.exe"),
+    path.join(os.homedir(), ".moon", "bin", "lane"),
+    path.join(os.homedir(), ".moon", "bin", "lane.exe"),
   ];
 }
 
@@ -127,7 +130,7 @@ function validateExecutablePath(
     if (isNodeError(error) && error.code === "EACCES") {
       return {
         ok: false,
-        message: `${label} is not executable: ${file}. Run chmod +x on the file or update lane.lsp.path.`,
+        message: `${label} is not executable: ${file}. Run chmod +x on the file or update lane.path.`,
       };
     }
     const message = error instanceof Error ? error.message : String(error);
@@ -139,13 +142,13 @@ function isNodeError(error: unknown): error is NodeJS.ErrnoException {
   return error instanceof Error && "code" in error;
 }
 
-async function showLaneLspPathError(message: string): Promise<void> {
+async function showLanePathError(message: string): Promise<void> {
   const openSettings = "Open Settings";
   const action = await vscode.window.showErrorMessage(message, openSettings);
   if (action === openSettings) {
     await vscode.commands.executeCommand(
       "workbench.action.openSettings",
-      "lane.lsp.path",
+      "lane.path",
     );
   }
 }
