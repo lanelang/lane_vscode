@@ -28,3 +28,8 @@ _Avoid_: standard library path, compiler global
 - Hover and go-to-definition are provided by server-advertised LSP
   capabilities; the extension only needs to start the standard language client
   for `.lane` documents.
+- Type, parameter-name, and implicit-argument inlay hints are provided by the
+  Lane LSP server through `textDocument/inlayHint`; the extension only enables
+  editor inlay hints for Lane files.
+- Lane syntax coloring is provided by the TextMate grammar, not LSP semantic
+  tokens.

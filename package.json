@@ -36,19 +36,6 @@
         "path": "./syntaxes/lane.tmLanguage.json"
       }
     ],
-    "semanticTokenScopes": [
-      {
-        "language": "lane",
-        "scopes": {
-          "variable": [
-            "variable.other.lane"
-          ],
-          "parameter": [
-            "variable.parameter.lane"
-          ]
-        }
-      }
-    ],
     "commands": [
       {
         "command": "lane.restartLsp",
@@ -67,7 +54,8 @@
     },
     "configurationDefaults": {
       "[lane]": {
-        "editor.semanticHighlighting.enabled": true
+        "editor.inlayHints.enabled": "on",
+        "editor.semanticHighlighting.enabled": false
       }
     }
   },

@@ -31,6 +31,9 @@
       "include": "#functionCalls"
     },
     {
+      "include": "#identifiers"
+    },
+    {
       "include": "#operators"
     }
   ],
@@ -228,6 +231,18 @@
               "name": "entity.name.function.call.lane"
             }
           }
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "variable.parameter.lane",
+          "match": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*:)"
+        },
+        {
+          "name": "variable.other.lane",
+          "match": "\\b[a-z_][A-Za-z0-9_]*\\b"
         }
       ]
     },

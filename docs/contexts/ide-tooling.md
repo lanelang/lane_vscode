@@ -86,9 +86,15 @@ JSON-RPC 2.0 messages and LSP-style `Content-Length` framing.
 _Avoid_: LSP server framework, method dispatch
 
 **Editor Intelligence**:
-Server-backed semantic editor features such as hover and go-to-definition,
-plus later features such as completion, find-references, and document symbols.
+Server-backed semantic editor features such as hover, go-to-definition, and
+inlay hints, plus later features such as completion, find-references, and
+document symbols.
 _Avoid_: diagnostics, compiler checking
+
+**Editor Inlay Hint**:
+A small editor-rendered annotation derived from compiler analysis, such as an
+inferred type, call parameter name, or implicit contextual argument.
+_Avoid_: syntax highlighting, hover tooltip
 
 **Desktop Native LSP**:
 The v1 deployment model where the Lane VS Code Extension runs on VS Code
@@ -115,6 +121,11 @@ _Avoid_: VS Code Web extension, WASM language server
 - Hover and go-to-definition are enabled through **Lane LSP Server**
   capabilities advertised during `initialize`; the **Lane VS Code Extension**
   does not implement separate VS Code providers for those features.
+- Type, parameter-name, and implicit-argument **Editor Inlay Hints** are enabled
+  through the **Lane LSP Server** `textDocument/inlayHint` capability; the
+  extension only defaults Lane files to show editor inlay hints.
+- Syntax coloring is provided by the Lane TextMate grammar and must not depend
+  on LSP semantic tokens.
 - The first supported deployment target is **Desktop Native LSP**.
 - The first supported feature scope was **Diagnostics-First LSP**.
 - v1 **Lane LSP Server** diagnostics use **Workspace Library Analysis**.
@@ -141,6 +152,11 @@ _Avoid_: VS Code Web extension, WASM language server
 > **Dev:** "Should the VS Code extension implement hover or go-to-definition?"
 > **Domain expert:** "No. The **Lane LSP Server** advertises those capabilities
 > during `initialize`, and the **VS Code Language Client** wires them into VS Code."
+
+> **Dev:** "Should the VS Code extension implement type or parameter inlay hints?"
+> **Domain expert:** "No. The **Lane LSP Server** handles
+> `textDocument/inlayHint`; the extension only enables editor inlay hints for
+> Lane documents."
 
 > **Dev:** "Should the VS Code extension pass a standard-library path?"
 > **Domain expert:** "No. The **VS Code Language Client** sends the
